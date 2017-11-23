@@ -1,0 +1,6 @@
+<% @posts.each do |post| %>
+<div class="posts">
+    <p><%= post.title %></p>
+</div>
+<% end %>
+<div class="posts_next"><%= @posts.next_page %></div>

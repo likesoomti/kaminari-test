@@ -1,0 +1,70 @@
+<div class="post_container">
+  <% @posts.each do |p| %>
+  <div class="posts">
+      <%= p.title %><br>
+  </div> 
+  <% end %>
+  <div class="posts_next"><%= @posts.next_page %></div>
+</div>
+<style>
+  html,body{
+    height: 100%;
+  }
+  .post_container{
+    height: 100%;
+    overflow: scroll;
+  }
+  .posts{
+    font-size: 200%;
+    display: flex;
+    width: 100%;
+    height: 300px;
+    justify-content: center;
+    background-color: #fdf;
+    align-items: center;
+    border: 1px solid grey;
+  }
+  .posts_next{
+    display: none;
+
+  }
+</style>
+<script>
+   // 무한 스크롤 플래그
+   var count = 1 
+   $(".post_container").scroll(function() {
+    console.log("hi")
+     store_scroll_top = $(".post_container").scrollTop();
+     store_info_height = $(".post_container").height();
+     store_real_height = $(".post_container")[0].scrollHeight ;
+    
+     // 고정값+ 스크롤 끝값 = real_height
+     if(store_real_height == store_scroll_top + store_info_height){
+
+       lastpage = "<%= @posts.total_pages %>";        // last page
+       // 마지막 reviews_next 값을 가져와야 하기때문에 length 체크하는 값 필요
+       len_check = $(".posts_next")
+       console.log()
+       // 마지막 페이지는 
+       n_page = len_check[len_check.length-1].innerHTML;
+    
+       // 플래그 값이 lastpage보다 같거나 커지면 스크롤 end
+       if(count < lastpage){
+         console.log(count);
+         $.ajax({
+           method: "post",
+           url: "/posts/kami?="+n_page,
+           data:{
+             next_page: n_page
+           },
+           dataType: "html"   
+         })
+         .done(function( msg ) {
+             $(".post_container").append(msg);
+           }); 
+       }
+       count++;
+     }
+    }
+   );
+</script>
